@@ -48,7 +48,7 @@ nav ul li a:hover {
 /* Hero-секція */
 .home main {
   text-align: center;
-  background-image: url('./images/equipment.png');
+  background-image: url('./public/images/equipment.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -62,7 +62,7 @@ nav ul li a:hover {
   align-items: center;
   width: 100%;
   min-height: 100vh; /* Повна висота екрана */
-  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('./images/equipment.png');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('./public/images/equipment.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
