@@ -257,10 +257,12 @@ nav ul li a:hover {
 .rental .cancel-button {
   background-color: rgb(255, 0, 0);
   color: white;
-  border: none;
-  padding: 10px 20px;
-  font-weight: bold;
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px 10px;
   border-radius: 5px;
+  font-weight: bold;
+  border: none;
   cursor: pointer;
   transition: background 0.3s;
 }
@@ -301,11 +303,14 @@ nav ul li a:hover {
 }
 
 .status {
-  display: inline-block;
-  margin-top: 10px;
+  display: block;
+  position: relative;
+  margin: 10px auto;
+  width: 100px;
   padding: 5px 10px;
   border-radius: 5px;
   font-weight: bold;
+  text-align: center;
 }
 
 .active-status {
@@ -389,6 +394,28 @@ footer p {
 
 .my-rent{
   min-height: 70vh;
+}
+
+.quantity-select {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.quantity-select label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.quantity-select select {
+  padding: 8px 4px;
+  border-radius: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 60px;
 }
 
 /*Адаптивний дизайн*/

@@ -1,4 +1,3 @@
-// src/pages/MyRent.jsx
 import { useEffect, useState } from 'react';
 import RentalCard from '../components/RentalCard';
 import Header from '../components/Header';
@@ -13,16 +12,17 @@ const MyRent = () => {
   }, []);
 
   const cancelRental = (index) => {
-    const item = cart[index];
-    const updatedCart = [...cart];
-    updatedCart.splice(index, 1);
-    setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  const item = cart[index];
+  const updatedCart = [...cart];
+  updatedCart.splice(index, 1);
+  setCart(updatedCart);
+  localStorage.setItem('cart', JSON.stringify(updatedCart));
 
-    const savedStock = JSON.parse(localStorage.getItem('equipmentStock') || '{}');
-    savedStock[item.id] = (savedStock[item.id] || 0) + 1;
-    localStorage.setItem('equipmentStock', JSON.stringify(savedStock));
-  };
+  const savedStock = JSON.parse(localStorage.getItem('equipmentStock') || '{}');
+  savedStock[item.id] = (savedStock[item.id] || 0) + (item.quantity || 1);
+  localStorage.setItem('equipmentStock', JSON.stringify(savedStock));
+};
+
 
   return (
 <>

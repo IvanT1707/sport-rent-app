@@ -62,20 +62,24 @@ const Rent = () => {
     setStock(newStock);
   };
 
-  const handleRent = (id, startDate, endDate) => {
-    const item = equipmentList.find(eq => eq.id === id);
-    const updatedList = equipmentList.map(eq =>
-      eq.id === id ? { ...eq, stock: eq.stock - 1 } : eq
-    );
-    const updatedStock = { ...stock, [id]: (stock[id] ?? item.stock) - 1 };
+  const handleRent = (id, startDate, endDate, quantity) => {
+  const item = equipmentList.find(eq => eq.id === id);
 
-    setEquipmentList(updatedList);
-    saveStock(updatedStock);
+  if (!item || item.stock < quantity) return;
 
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    cart.push({ ...item, startDate, endDate });
-    localStorage.setItem('cart', JSON.stringify(cart));
-  };
+  const updatedList = equipmentList.map(eq =>
+    eq.id === id ? { ...eq, stock: eq.stock - quantity } : eq
+  );
+  const updatedStock = { ...stock, [id]: (stock[id] ?? item.stock) - quantity };
+
+  setEquipmentList(updatedList);
+  saveStock(updatedStock);
+
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  cart.push({ ...item, startDate, endDate, quantity });
+  localStorage.setItem('cart', JSON.stringify(cart));
+};
+
 
   const filteredList = equipmentList.filter(item => {
     const matchCategory = selectedCategory === '' || item.category === selectedCategory;

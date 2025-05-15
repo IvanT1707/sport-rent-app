@@ -5,6 +5,7 @@ const EquipmentCard = ({ item, onRent }) => {
   const [endDate, setEndDate] = useState('');
   const [isRented, setIsRented] = useState(false);
   const [error, setError] = useState('');
+  const [quantity, setQuantity] = useState(1);
 
   const handleRent = () => {
     if (!startDate || !endDate) {
@@ -12,11 +13,22 @@ const EquipmentCard = ({ item, onRent }) => {
       return;
     }
 
+    if (new Date(startDate) > new Date(endDate)) {
+      setError('Дата початку не може бути пізніше за дату завершення');
+      return;
+    }
+
+    if (quantity > item.stock) {
+      setError('Вибрана кількість перевищує наявність');
+      return;
+    }
+
     setError('');
-    onRent(item.id, startDate, endDate);
+    onRent(item.id, startDate, endDate, quantity);
     setIsRented(true);
     setStartDate('');
     setEndDate('');
+    setQuantity(1);
 
     setTimeout(() => setIsRented(false), 3000);
   };
@@ -26,7 +38,7 @@ const EquipmentCard = ({ item, onRent }) => {
       <img src={item.image} alt={item.name} />
       <h3>{item.name}</h3>
       <p>Ціна: {item.price} грн/день</p>
-      <p>В наявності: {item.stock}</p>
+      <p>В наявності: {item.stock === 0 ? '0 (немає в наявності)' : item.stock}</p>
 
       <div className="date-inputs">
         <input
@@ -45,20 +57,42 @@ const EquipmentCard = ({ item, onRent }) => {
         />
       </div>
 
+      <div className="quantity-select">
+        <label>Кількість:</label>
+        {item.stock === 0 ? (
+          <span>0</span>
+        ) : (
+          <select
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+          >
+            {Array.from({ length: item.stock }, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+
       <div className="detail">
         Деталі
         <span className="detail-text"> {item.detail}</span>
       </div>
-
-      {error && <p className="error-message">{error}</p>}
 
       <button
         className={`rent-button ${isRented ? 'rented' : ''}`}
         onClick={handleRent}
         disabled={item.stock === 0}
       >
-        {isRented ? 'Орендовано!' : 'Орендувати'}
+        {item.stock === 0
+          ? 'Немає в наявності'
+          : isRented
+          ? 'Орендовано'
+          : 'Орендувати'}
       </button>
+
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };
