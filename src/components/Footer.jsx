@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function Footer() {
   return (
     <footer>
@@ -14,10 +16,10 @@ function Footer() {
         <div className="footer-column">
           <h3>Навігація</h3>
           <ul>
-            <li><a href="/">Головна</a></li>
-            <li><a href="/rent">Обладнання</a></li>
-            <li><a href="/myrent">Мої оренди</a></li>
-            <li><a href="/payment">Оплата</a></li>
+            <li><Link to="/">Головна</Link></li>
+            <li><Link to="/rent">Обладнання</Link></li>
+            <li><Link to="/myrent">Мої оренди</Link></li>
+            <li><Link to="/payment">Оплата</Link></li>
           </ul>
         </div>
       </div>
