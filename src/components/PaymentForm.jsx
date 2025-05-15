@@ -1,4 +1,3 @@
-// src/components/PaymentForm.jsx
 import React from 'react';
 
 function PaymentForm() {
