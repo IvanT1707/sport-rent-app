@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import RentalCard from '../components/RentalCard';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Link } from 'react-router-dom';
+
 
 const MyRent = () => {
   const [cart, setCart] = useState([]);
