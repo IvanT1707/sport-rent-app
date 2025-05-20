@@ -81,6 +81,7 @@ const Rent = () => {
 };
 
 
+
   const filteredList = equipmentList.filter(item => {
     const matchCategory = selectedCategory === '' || item.category === selectedCategory;
     const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());

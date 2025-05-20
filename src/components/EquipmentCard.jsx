@@ -30,7 +30,7 @@ const EquipmentCard = ({ item, onRent }) => {
     setEndDate('');
     setQuantity(1);
 
-    setTimeout(() => setIsRented(false), 3000);
+    setTimeout(() => setIsRented(false), 1000);
   };
 
   return (
