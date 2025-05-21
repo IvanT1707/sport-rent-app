@@ -34,14 +34,16 @@ nav ul {
   gap: 30px;
 }
 
-nav ul li a {
+nav ul li a, nav ul li span{
   color: #f4f4f4;
   text-decoration: none;
   font-weight: 400;
   font-size: 16px;
+  cursor: pointer;
 }
 
-nav ul li a:hover {
+
+nav ul li a:hover, nav ul li span:hover {
   color: lightgray;
 }
 
@@ -204,6 +206,7 @@ nav ul li a:hover {
 
 /* Форма оплати */
 .payment-form {
+  min-height: 70vh;
   max-width: 600px;
   margin: 30px auto;
   background-color: #fff;
@@ -254,7 +257,7 @@ nav ul li a:hover {
   border-radius: 8px;
 }
 
-.rental .cancel-button {
+.cancel-button {
   background-color: rgb(255, 0, 0);
   color: white;
   display: inline-block;
@@ -267,7 +270,7 @@ nav ul li a:hover {
   transition: background 0.3s;
 }
 
-.rental .cancel-button:hover {
+.cancel-button:hover {
   background-color: #c82333;
 }
 

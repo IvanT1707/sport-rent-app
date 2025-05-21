@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { auth } from '../firebase';
 
 const EquipmentCard = ({ item, onRent }) => {
   const [startDate, setStartDate] = useState('');
@@ -7,7 +8,7 @@ const EquipmentCard = ({ item, onRent }) => {
   const [error, setError] = useState('');
   const [quantity, setQuantity] = useState(1);
 
-  const handleRent = () => {
+  const handleRent = async () => {
     if (!startDate || !endDate) {
       setError('Будь ласка, виберіть дату початку та завершення оренди');
       return;
@@ -23,14 +24,37 @@ const EquipmentCard = ({ item, onRent }) => {
       return;
     }
 
-    setError('');
-    onRent(item.id, startDate, endDate, quantity);
-    setIsRented(true);
-    setStartDate('');
-    setEndDate('');
-    setQuantity(1);
+    const totalDays =
+      (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24);
+    const totalPrice = item.price * totalDays * quantity;
 
-    setTimeout(() => setIsRented(false), 1000);
+    try {
+      await fetch('/api/rentals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: auth.currentUser.uid,
+          equipmentId: item.id,
+          startDate,
+          endDate,
+          quantity,
+          price: totalPrice
+        })
+      });
+
+      setIsRented(true);
+      setStartDate('');
+      setEndDate('');
+      setQuantity(1);
+      setError('');
+      setTimeout(() => setIsRented(false), 1000);
+
+      if (onRent) {
+        onRent(item.id, startDate, endDate, quantity); // опціонально
+      }
+    } catch (err) {
+      setError('Помилка під час збереження оренди');
+    }
   };
 
   return (

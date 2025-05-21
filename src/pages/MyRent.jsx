@@ -1,50 +1,97 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import RentalCard from '../components/RentalCard';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase';
+import { db } from '../firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 const MyRent = () => {
   const [cart, setCart] = useState([]);
+  const [checkedAuth, setCheckedAuth] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
-    setCart(storedCart);
-  }, []);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        if (!checkedAuth) {
+          alert('Будь ласка, увійдіть у систему');
+          navigate('/login');
+        }
+      } else {
+        setCheckedAuth(true);
+      }
+    });
 
-  const cancelRental = (index) => {
-  const item = cart[index];
-  const updatedCart = [...cart];
-  updatedCart.splice(index, 1);
-  setCart(updatedCart);
-  localStorage.setItem('cart', JSON.stringify(updatedCart));
+    return () => unsubscribe();
+  }, [checkedAuth, navigate]);
 
-  const savedStock = JSON.parse(localStorage.getItem('equipmentStock') || '{}');
-  savedStock[item.id] = (savedStock[item.id] || 0) + (item.quantity || 1);
-  localStorage.setItem('equipmentStock', JSON.stringify(savedStock));
+  useEffect(() => {
+  const fetchRentals = async () => {
+  try {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const q = query(collection(db, 'rentals'), where('userId', '==', user.uid));
+    const querySnapshot = await getDocs(q);
+
+    const rentals = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    setCart(rentals);
+  } catch (err) {
+    console.error('Помилка завантаження оренд з Firestore:', err);
+  }
 };
 
 
+  if (checkedAuth) {
+    fetchRentals();
+  }
+}, [checkedAuth]);
+
+
+  const cancelRental = (index) => {
+    const item = cart[index];
+    const updatedCart = [...cart];
+    updatedCart.splice(index, 1);
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+    const savedStock = JSON.parse(localStorage.getItem('equipmentStock') || '{}');
+    savedStock[item.id] = (savedStock[item.id] || 0) + (item.quantity || 1);
+    localStorage.setItem('equipmentStock', JSON.stringify(savedStock));
+  };
+
   return (
-<>
-  <Header />
-    <main className='my-rent'>
-      <section style={{ textAlign: 'center' }}>
-        <h1 className="hero">Мої оренди</h1>
-        <p>Перегляньте список активних та минулих оренд</p>
-      </section>
-      <div className="rent-list">
-        {cart.map((rental, index) => (
-          <RentalCard
-            key={index}
-            rental={rental}
-            onCancel={() => cancelRental(index)}
-          />
-        ))}
-      </div>
-    </main>
-    <Footer />
-</>
+    <>
+      <Header />
+      <main className='my-rent'>
+        <section style={{ textAlign: 'center' }}>
+          <h1 className="hero">Мої оренди</h1>
+          <p>Перегляньте список активних та минулих оренд</p>
+        </section>
+        <div className="rent-list">
+          {cart.length === 0 ? (
+            <p style={{ textAlign: 'center' }}>Наразі немає активних оренд.</p>
+          ) : (
+            cart.map((rental, index) => (
+              <RentalCard
+                key={index}
+                rental={rental}
+                onCancel={() => cancelRental(index)}
+              />
+            ))
+          )}
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 };
 
