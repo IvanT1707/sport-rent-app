@@ -7,6 +7,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
 import { db } from '../firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+ import { doc, deleteDoc } from 'firebase/firestore'; 
 
 const MyRent = () => {
   const [cart, setCart] = useState([]);
@@ -56,17 +57,26 @@ const MyRent = () => {
 }, [checkedAuth]);
 
 
-  const cancelRental = (index) => {
-    const item = cart[index];
+const cancelRental = async (index) => {
+  const rentalToDelete = cart[index];
+
+  const confirmDelete = window.confirm('Ви впевнені, що хочете скасувати оренду?');
+  if (!confirmDelete) return;
+
+  try {
+    await deleteDoc(doc(db, 'rentals', rentalToDelete.id));
+
     const updatedCart = [...cart];
     updatedCart.splice(index, 1);
     setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
 
-    const savedStock = JSON.parse(localStorage.getItem('equipmentStock') || '{}');
-    savedStock[item.id] = (savedStock[item.id] || 0) + (item.quantity || 1);
-    localStorage.setItem('equipmentStock', JSON.stringify(savedStock));
-  };
+    alert('Оренду скасовано');
+  } catch (error) {
+    console.error('Помилка при скасуванні оренди:', error);
+    alert('Не вдалося скасувати оренду');
+  }
+};
+
 
   return (
     <>

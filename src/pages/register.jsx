@@ -4,12 +4,14 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -21,7 +23,7 @@ const Register = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       alert("Реєстрація успішна");
-      window.location.href = '/login';
+      navigate('/login');
     } catch (error) {
       setError(error.message);
     }
